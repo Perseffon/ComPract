@@ -1,20 +1,20 @@
 #include "first.h"
 #include <string.h>
 #include <stdio.h>
-#include <dlfcn.h>
+#include <windows.h>
 #include "load.h"
 
 void LoadRun(const char * const s) 
 {
 	void * lib;
 	void (*fun)(void);
-	lib = dlopen(s,RTLD_LAZY);
+	lib = LoadLibrary(s);
 	if (!lib) 
 	{
 		printf("cannot open library '%s'\n", s);
 		return;
 	}
-	fun = (void (*)(void))dlsym(lib, "obrMas");
+	fun = (void (*)(void))GEtProcAddress((MINSTANCE)lib, "obrMas");
 	if (fun == NULL) 
 	{
 		printf("cannot load function func\n");
@@ -22,5 +22,5 @@ void LoadRun(const char * const s)
 	{
 		fun();
 	}
-	dlclose(lib);
+	FreeLibrary((HINSTANCE)lib);
 }
